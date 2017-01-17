@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset='UTF-8'>
+
+    <title>Dynamic Dropdown</title>
+
+    <!--link rel='stylesheet' href='css/style.css'-->
+
+    <!--script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script-->
+    <script src="jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.js"></script>
+
+    <script>
+
+        function getObjects(obj, key, val) {
+            var objects = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    objects = objects.concat(getObjects(obj[i], key, val));
+                } else if (i == key && obj[key] == val) {
+                    objects.push(obj);
+                }
+            }
+            return objects;
+        }
+
+        $(function () {
+
+            var country_list = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua &amp; Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas"
+                , "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia &amp; Herzegovina", "Botswana", "Brazil", "British Virgin Islands"
+                , "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Cape Verde", "Cayman Islands", "Chad", "Chile", "China", "Colombia", "Congo", "Cook Islands", "Costa Rica"
+                , "Cote D Ivoire", "Croatia", "Cruise Ship", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea"
+                , "Estonia", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Polynesia", "French West Indies", "Gabon", "Gambia", "Georgia", "Germany", "Ghana"
+                , "Gibraltar", "Greece", "Greenland", "Grenada", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India"
+                , "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Kyrgyz Republic", "Laos", "Latvia"
+                , "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macau", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania"
+                , "Mauritius", "Mexico", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Namibia", "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia"
+                , "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal"
+                , "Puerto Rico", "Qatar", "Reunion", "Romania", "Russia", "Rwanda", "Saint Pierre &amp; Miquelon", "Samoa", "San Marino", "Satellite", "Saudi Arabia", "Senegal", "Serbia", "Seychelles"
+                , "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka", "St Kitts &amp; Nevis", "St Lucia", "St Vincent", "St. Lucia", "Sudan"
+                , "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor L'Este", "Togo", "Tonga", "Trinidad &amp; Tobago", "Tunisia"
+                , "Turkey", "Turkmenistan", "Turks &amp; Caicos", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Virgin Islands (US)"
+                , "Yemen", "Zambia", "Zimbabwe"];
+
+            var option = '';
+            for (var i = 0; i < country_list.length; i++) {
+                if (i === 0) { option += '<option selected value="base">Please Select</option>'; }
+                option += '<option value="' + country_list[i] + '">' + country_list[i] + '</option>';
+            }
+            $('#json-one').append(option);
+
+
+
+
+            $("#json-one").change(function () {
+
+                var $dropdown = $(this);
+
+                $.getJSON("states.json", function (data) {
+
+                    var key = $dropdown.val();
+                    var vals = [];
+
+                    var xx = getObjects(data, 'country', key); // Returns an array of matching objects
+                    //console.log(xx);
+
+                    var myObj = {
+                        "country": "Mexico",
+                        "states": ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila de Zaragoza", "Colima", "Distrito Federal", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Mexico", "Michoacan de Ocampo", "Morelos", "Nayarit", "Nuevo Leon", "Oaxaca", "Puebla", "Queretaro de Arteaga", "Quintana Roo", "San Luis Potosi", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz-Llave", "Yucatan", "Zacatecas"]
+                    };
+
+                    var array = $.map(xx, function (value, index) {
+                        return [value];
+                    });
+
+                    var myStates = _.pluck(array, 'country');
+
+                    //var yy = array.split(0,1);
+                    console.log(array[1]);                    
+                    console.log(myStates);
+
+                    var result = array.reduce(function (memo, member) {
+                        memo.country.push(member.country);
+                        memo.states.push(member.states);
+                        return memo;
+                    }, { country: [], states: [] });
+
+                    console.log(result.states);
+                    vals = result.states;
+                    // => [ "Kuroko", "Kise", "Akashi" ]
+
+
+                    /*
+                    
+                                        if (key == 'base') {
+                    
+                                            vals = ['Please choose from above'];
+                                        } else {
+                                            var xx = getObjects(data, 'country', key); // Returns an array of matching objects
+                                            //xx.splice(0,1);
+                                            //console.log(xx);
+                                            //console.log(Object.keys(xx));
+                                            //console.log(Object.getOwnPropertyNames(xx).sort());
+                                            console.log(xx.hasOwnProperty("states"));
+                                            console.log(xx.hasOwnProperty("country"));
+                                            console.log(xx);
+                                            //console.log(Object.values(xx.split));
+                                            vals = xx;
+                    
+                    
+                                            //vals = aux.toString();
+                    
+                                            //vals = xx.states;
+                    
+                    
+                                        }
+                    */
+
+                    switch (key) {
+                        case 'beverages':
+                            vals = data.beverages.split(",");
+                            break;
+                        case 'snacks':
+                            vals = data.snacks.split(",");
+                        case 'Mexico':
+                            vals = data.Mexico.split(",");
+                            break;
+                        case 'base':
+                            vals = ['Please choose from above'];
+                    }
+
+
+
+
+                    var $jsontwo = $("#json-two");
+                    $jsontwo.empty();
+                    $.each(vals[0], function (index, value) {
+                        $jsontwo.append("<option>" + value + "</option>");
+                    });
+
+                });
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="page-wrap">
+
+        <em>Country</em>
+        <select data-placeholder="Choose a Country..." style="width:350px;" tabindex="1" id="json-one" class="ui-widget">
+<!--option selected value="Choose a Country..."></option-->
+</select>
+
+
+<h1>Pulls from JSON</h1>
+
+
+<br />
+
+<select id="json-two">
+			<option>Please choose from above</option>
+		</select>
+
+</div>
+
+</body>
+
+</html>
