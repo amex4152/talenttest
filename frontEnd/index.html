@@ -3,12 +3,9 @@
 <head>
     <meta charset='UTF-8'>
 
-    <title>Dynamic Dropdown</title>
-
-    <!--link rel='stylesheet' href='css/style.css'-->
-
+    <title>Front End Test</title>
+    
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <!--script src="jquery.js"></script-->
     <script>
         function getObjects(obj, key, val) {
             var objects = [];
@@ -48,9 +45,6 @@
             }
             $('#json-one').append(option);
 
-
-
-
             $("#json-one").change(function () {
 
                 var $dropdown = $(this);
@@ -85,8 +79,7 @@
                 });
             });
 
-
-            /*TEST */
+            
 
             $("#json-two").change(function () {
 
@@ -120,19 +113,6 @@
                     });
 
                 });
-/*
-                var jqxhr = $.getJSON("munic.json", function () {
-                    console.log("success");
-                })
-                    .done(function () {
-                        console.log("second success");
-                    })
-                    .fail(function () {
-                        console.log("error");
-                    });
-*/
-
-
 
             });
 
@@ -161,6 +141,8 @@
 <select id="json-three">
 			<option>Please choose from above</option>
 		</select>
+
+        <p><strong>NOTA:</strong>Para esta prueba, solo México cuenta con los datos de municipios.</p>
 
 </div>
 
